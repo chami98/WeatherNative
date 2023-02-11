@@ -1,19 +1,117 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
 import { fetchWeather } from '../fetchWeather';
+import { fetchLocationWeather } from '../fetchLocationWeather';
+import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, Platform, Alert } from 'react-native';
+import * as Location from 'expo-location';
 
 const Weather = () => {
     const [weather, setWeather] = useState({});
+    const [location, setLocation] = useState('Galle');
+    const [loading, setLoading] = useState(false);
+
 
     useEffect(() => {
-        fetchWeather('London').then((data) => setWeather(data));
+        fetchWeather(location).then((data) => setWeather(data));
     }, []);
 
+    const fetchData = () => {
+        setLoading(true);
+        fetchWeather(location).then((data) => {
+            setWeather(data);
+            setLoading(false);
+        });
+    };
+
+    const fetchLocationData = async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+            Alert.alert('Error', 'Permission to access location was denied');
+            return;
+        }
+
+        setLoading(true);
+        let location = await Location.getCurrentPositionAsync({});
+
+        fetchLocationWeather(location.coords.latitude, location.coords.longitude).then((data) => {
+            setWeather(data);
+            setLoading(false);
+        });
+    };
+
+
+
+    const celsius = weather.main ? weather.main.temp - 273.15 : 0;
+    const humidity = weather.main ? weather.main.humidity : 0;
+    const windSpeed = weather.wind ? weather.wind.speed : 0;
+    const pressure = weather.main ? weather.main.pressure : 0;
+    const description = weather.weather ? weather.weather[0].description : '';
+
     return (
-        <View>
-            <Text>{weather.main && weather.main.temp}</Text>
+        <View style={styles.container}>
+            <View style={styles.inputContainer}>
+                <TextInput
+                    value={location}
+                    onChangeText={(text) => setLocation(text)}
+                    placeholder="Enter location"
+                    style={styles.input}
+                />
+                <Button onPress={fetchData} title="Get Weather" color="#00b0ff"
+                    style={styles.button} />
+            </View>
+
+            {loading ? <ActivityIndicator size="large" color="#fff" /> : (
+                <View style={styles.weatherContainer}>
+                    <Text style={styles.text}>Temperature: {celsius.toFixed(1)}°C</Text>
+                    <Text style={styles.text}>Humidity: {humidity}%</Text>
+                    <Text style={styles.text}>Wind Speed: {windSpeed}m/s</Text>
+                    <Text style={styles.text}>Pressure: {pressure}hPa</Text>
+                    <Text style={styles.text}>Weather: {description}</Text>
+
+                    <Button title='Use Device Location'
+                        onPress={fetchLocationData}
+                    />
+                </View>
+            )}
+
+
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        width: '100%',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#000',
+    },
+    inputContainer: {
+        width: '80%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 20,
+    },
+    input: {
+        width: '60%',
+        height: 40,
+        padding: 10,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+    },
+    weatherContainer: {
+        width: '80%',
+        alignItems: 'center',
+    },
+    text: {
+        fontSize: 20,
+        color: '#fff',
+        marginVertical: 10,
+    },
+    logo: {
+        width: '100%'
+    }
+});
 
 export default Weather;
