@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchWeather } from '../fetchWeather';
 import { fetchLocationWeather } from '../fetchLocationWeather';
-import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, Platform, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, Platform, Alert, Image } from 'react-native';
 import * as Location from 'expo-location';
 
 const Weather = () => {
@@ -16,10 +16,14 @@ const Weather = () => {
 
     const fetchData = () => {
         setLoading(true);
-        fetchWeather(location).then((data) => {
-            setWeather(data);
-            setLoading(false);
-        });
+
+        if (location != "") {
+            fetchWeather(location).then((data) => {
+                setWeather(data);
+                setLoading(false);
+            });
+        }
+
     };
 
     const fetchLocationData = async () => {
@@ -38,8 +42,6 @@ const Weather = () => {
         });
     };
 
-
-
     const celsius = weather.main ? weather.main.temp - 273.15 : 0;
     const humidity = weather.main ? weather.main.humidity : 0;
     const windSpeed = weather.wind ? weather.wind.speed : 0;
@@ -48,9 +50,10 @@ const Weather = () => {
 
     return (
         <View style={styles.container}>
+            <Image source={require('../../assets/weatherx.png')}
+                style={{ width: '100%', height: 100, marginBottom: 20 }} />
             <View style={styles.inputContainer}>
                 <TextInput
-                    value={location}
                     onChangeText={(text) => setLocation(text)}
                     placeholder="Enter location"
                     style={styles.input}
