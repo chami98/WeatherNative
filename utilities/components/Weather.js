@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { fetchWeather } from '../fetchWeather';
 import { fetchLocationWeather } from '../fetchLocationWeather';
-import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, Platform, Alert, Image } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, Platform, Alert, Image, TouchableWithoutFeedback } from 'react-native';
 import * as Location from 'expo-location';
+import { Keyboard } from 'react-native';
 
 const Weather = ({ navigation }) => {
     const [weather, setWeather] = useState({});
@@ -56,47 +57,42 @@ const Weather = ({ navigation }) => {
     const description = weather.weather ? weather.weather[0].description : '';
 
     return (
-        <View style={styles.container}>
-            <Image source={require('../../assets/weatherx.png')}
-                style={{ width: '100%', height: 100, marginBottom: 20 }} />
-            <View style={styles.inputContainer}>
-                <TextInput
-                    onChangeText={(text) => setLocation(text)}
-                    placeholder="Enter location"
-                    style={styles.input}
-                />
-                <Button onPress={fetchData} title="Get Weather" color="#00b0ff"
-                    style={styles.button} />
-            </View>
-
-            {loading ? <ActivityIndicator size="large" color="#fff" /> : (
-                <View style={styles.weatherContainer}>
-                    <Text style={styles.text}>Location: {name}</Text>
-                    <Text style={styles.text}>Temperature: {celsius.toFixed(1)}°C</Text>
-                    <Text style={styles.text}>Humidity: {humidity}%</Text>
-                    <Text style={styles.text}>Wind Speed: {windSpeed}m/s</Text>
-                    <Text style={styles.text}>Pressure: {pressure}hPa</Text>
-                    <Text style={styles.text}>Weather: {description}</Text>
-                    <Text style={styles.text}>Sea Level: {sea_level}m</Text>
-                    <Text style={styles.text}>Feels Like: {feels_like.toFixed(1)}°C</Text>
-                    <Text style={styles.text}>Wind Speed: {windSpeed}</Text>
-                    <Text style={styles.text}>Location: {name}</Text>
-
-                    <Button title='Use Device Location'
-                        onPress={fetchLocationData}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
+                <Image source={require('../../assets/weatherx.png')}
+                    style={{ width: '100%', height: 100, marginBottom: 20 }} />
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        onChangeText={(text) => setLocation(text)}
+                        placeholder="Enter location"
+                        style={styles.input}
                     />
-
+                    <Button onPress={fetchData} title="Get Weather" color="#00b0ff"
+                        style={styles.button} />
                 </View>
-            )}
 
-            <Button title='About Us'
-                onPress={() => navigation.navigate("About", {
-                    firstName: 'chamikara',
-                    lastName: 'mendis'
-                })}
-                style={styles.button}
-            />
-        </View>
+                <Button title='Use Device Location'
+                    onPress={fetchLocationData}
+                />
+                {loading ? <ActivityIndicator size="large" color="#fff" /> : (
+                    <View style={styles.weatherContainer}>
+                        <Text style={styles.text}>Location: {name}</Text>
+                        <Text style={styles.text}>Temperature: {celsius.toFixed(1)}°C</Text>
+                        <Text style={styles.text}>Humidity: {humidity}%</Text>
+                        <Text style={styles.text}>Wind Speed: {windSpeed}m/s</Text>
+                        <Text style={styles.text}>Pressure: {pressure}hPa</Text>
+                        <Text style={styles.text}>Weather: {description}</Text>
+                        <Text style={styles.text}>Sea Level: {sea_level}m</Text>
+                        <Text style={styles.text}>Feels Like: {feels_like.toFixed(1)}°C</Text>
+                        <Text style={styles.text}>Wind Speed: {windSpeed}</Text>
+                        <Text style={styles.text}>Location: {name}</Text>
+
+
+
+                    </View>
+                )}
+            </View>
+        </TouchableWithoutFeedback>
     );
 };
 

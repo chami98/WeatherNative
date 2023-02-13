@@ -1,32 +1,49 @@
 import React from 'react';
+import { Image } from 'react-native';
+import { ScrollView } from 'react-native';
 import { View } from 'react-native';
-import { StyleSheet } from 'react-native';
 import { Text } from 'react-native';
-import { ScrollView, Button } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-const About = ({ navigation, route }) => {
-
-    const { firstName, lastName } = route.params
-
+const About = () => {
     return (
-        <View style={styles.container}>
-            <ScrollView >
-                <Text>{firstName}</Text>
-                <Text>{lastName}</Text>
-            </ScrollView>
-        </View>
+        <ScrollView>
+            <View style={styles.container}>
+                <Image source={require('../../assets/Chamikara.png')}
+                    style={{ width: '100%' }} />
+                <Text style={styles.title}>About</Text>
+                <Text style={styles.text}>Name: Chamikara Mendis</Text>
+                <Text style={styles.text}>Role: Intern Software Engineer</Text>
+                <Text style={styles.text}>Skills: React Native, JavaScript, Node.js</Text>
+            </View>
+        </ScrollView>
 
     );
 }
 
-export default About;
+
 
 
 const styles = StyleSheet.create({
     container: {
-        display: 'flex',
-        justifyContent: 'center',
+        flex: 1,
         alignItems: 'center',
-        padding: 25
-    }
-})
+        justifyContent: 'center',
+        padding: 20,
+        backgroundColor: '#000',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
+    text: {
+        fontSize: 20,
+        color: '#fff',
+        marginVertical: 10,
+    },
+});
+
+
+
+export default About;
