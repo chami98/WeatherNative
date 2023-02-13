@@ -86,9 +86,6 @@ const Weather = ({ navigation }) => {
                         <Text style={styles.text}>Feels Like: {feels_like.toFixed(1)}°C</Text>
                         <Text style={styles.text}>Wind Speed: {windSpeed}</Text>
                         <Text style={styles.text}>Location: {name}</Text>
-
-
-
                     </View>
                 )}
             </View>
